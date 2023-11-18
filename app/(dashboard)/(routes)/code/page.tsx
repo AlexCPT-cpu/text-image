@@ -8,7 +8,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/navigation";
-import { ChatCompletionRequestMessage } from "openai";
+import ChatCompletionRequestMessage from "openai";
 
 import { BotAvatar } from "@/components/bot-avatar";
 import { Heading } from "@/components/heading";
@@ -32,33 +32,33 @@ const CodePage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prompt: ""
-    }
+      prompt: "",
+    },
   });
 
   const isLoading = form.formState.isSubmitting;
-  
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const userMessage: ChatCompletionRequestMessage = { role: "user", content: values.prompt };
-      const newMessages = [...messages, userMessage];
-      
-      const response = await axios.post('/api/code', { messages: newMessages });
-      setMessages((current) => [...current, userMessage, response.data]);
-      
-      form.reset();
-    } catch (error: any) {
-      if (error?.response?.status === 403) {
-        proModal.onOpen();
-      } else {
-        toast.error("Something went wrong.");
-      }
-    } finally {
-      router.refresh();
-    }
-  }
 
-  return ( 
+  // const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  //   try {
+  //     const userMessage: ChatCompletionRequestMessage = { role: "user", content: values.prompt };
+  //     const newMessages = [...messages, userMessage];
+
+  //     const response = await axios.post('/api/code', { messages: newMessages });
+  //     setMessages((current) => [...current, userMessage, response.data]);
+
+  //     form.reset();
+  //   } catch (error: any) {
+  //     if (error?.response?.status === 403) {
+  //       proModal.onOpen();
+  //     } else {
+  //       toast.error("Something went wrong.");
+  //     }
+  //   } finally {
+  //     router.refresh();
+  //   }
+  // }
+
+  return (
     <div>
       <Heading
         title="Code Generation"
@@ -67,7 +67,7 @@ const CodePage = () => {
         iconColor="text-green-700"
         bgColor="bg-green-700/10"
       />
-      <div className="px-4 lg:px-8">
+      {/* <div className="px-4 lg:px-8">
         <div>
           <Form {...form}>
             <form 
@@ -141,10 +141,9 @@ const CodePage = () => {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
-   );
-}
- 
-export default CodePage;
+  );
+};
 
+export default CodePage;
