@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model UserApiLimit {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserSubscription {
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+}
+
+model Image {
+  id           String      @id @default(cuid())
+  url          String?
+  show         Boolean?
+  UserImages   UserImages? @relation(fields: [userImagesId], references: [id])
+  userImagesId String?
+
+  @@index([userImagesId])
+}
+
+model Pic {
+  id          String   @id @default(cuid())
+  twoDImage   String?
+  threeDImage String?
+  History     History? @relation(fields: [historyId], references: [id])
+  historyId   String?
+
+  @@index([historyId])
+}
+
+model History {
+  id           String      @id @default(cuid())
+  userId       String      @unique
+  pictures     Pic[]
+  UserImages   UserImages? @relation(fields: [userImagesId], references: [id])
+  userImagesId String?
+
+  @@index([userImagesId])
+}
+
+model UserImages {
+  id      String    @id @default(cuid())
+  userId  String    @unique
+  image   Image[]
+  history History[]
+}
